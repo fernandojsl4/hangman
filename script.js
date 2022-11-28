@@ -4,11 +4,15 @@ const playAgainBtn = document.getElementById("play-button");
 const popup = document.getElementById("popup-container");
 const notification = document.getElementById("notification-container");
 const finalMessage = document.getElementById("final-message");
-
+const lettersContainer = document.getElementById("letters-container");
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const figureParts = document.querySelectorAll(".figure-part");
-
+const correctLetters = [];
+const wrongLetters = [];
 const herokuWordAPI = "https://random-word-api.herokuapp.com/word";
-// const words = ["Python", "Javascript", "Heroku", "React"];
+
+let selectedWord;
+
 const messages = [
   "You have already entered this letter",
   "Only letters are accepted!",
@@ -16,22 +20,32 @@ const messages = [
   "Unfortunately you lost :(",
 ];
 
-// let selectedWord = words[Math.floor(Math.random() * words.length)];
+function updateAlphabetContainer() {
+  lettersContainer.innerHTML = `
+    ${alphabet
+      .split("")
+      .map((letter) =>
+        wrongLetters.includes(letter) || correctLetters.includes(letter)
+          ? `<li class="alphabet-letter--pressed">${letter}</li>`
+          : `<li class="alphabet-letter">${letter}</li>`
+      )
+      .join("")}`;
 
-let selectedWord = getWordFromAPI(herokuWordAPI);
-
-const correctLetters = [];
-const wrongLetters = [];
+  lettersContainer
+    .querySelectorAll(".alphabet-letter")
+    .forEach((elem) =>
+      elem.addEventListener("click", () => processPressedLetter(elem.innerHTML))
+    );
+}
 
 async function getWordFromAPI(herokuWordAPI) {
   const response = await fetch(herokuWordAPI);
   var data = await response.json();
-  return data[0];
+  return data[0].toUpperCase();
 }
 
 // Show hidden word.
 function displayWord() {
-  console.log(selectedWord);
   wordEl.innerHTML = `
     ${selectedWord
       .split("")
@@ -55,11 +69,10 @@ function displayWord() {
 
 // Update the wrong letters
 function updateWrongLettersEl() {
-  // wrongLettersEl.innerHTML = `<p>Wrong letters</p><span>${wrongLetters.toString()}</span>`;
   // Display wrong letters
   wrongLettersEl.innerHTML = `
-  ${wrongLetters.length > 0 ? "<p>Wrong</p>" : ""}
-  ${wrongLetters.map((letter) => `<span>${letter}</span>`)}
+  ${wrongLetters.length > 0 ? "<p>Wrong Letters</p>" : ""}
+  ${wrongLetters.map((letter) => `<span> ${letter}</span>`)}
   `;
 
   // Display parts
@@ -75,7 +88,7 @@ function updateWrongLettersEl() {
 
   // Check if lost
   if (wrongLetters.length === figureParts.length) {
-    finalMessage.innerText = messages[3];
+    finalMessage.innerText = messages[3] + ". The word was " + selectedWord;
     popup.style.display = "flex";
   }
 }
@@ -90,28 +103,34 @@ function showNotification(notificationMsg) {
   }, 2000);
 }
 
+// Process user pressed key
+function processPressedLetter(letter) {
+  if (selectedWord.includes(letter)) {
+    if (!correctLetters.includes(letter)) {
+      correctLetters.push(letter);
+      displayWord();
+      updateAlphabetContainer();
+    } else {
+      showNotification(messages[0]);
+    }
+  } else {
+    if (!wrongLetters.includes(letter)) {
+      wrongLetters.push(letter.toUpperCase());
+
+      updateWrongLettersEl();
+      updateAlphabetContainer();
+    } else {
+      showNotification(messages[0]);
+    }
+  }
+}
+
 // Key down letter press
 window.addEventListener("keydown", (e) => {
   const keyType = e.code.substring(0, 3);
   if (keyType === "Key") {
-    const letter = e.key;
-
-    if (selectedWord.includes(letter)) {
-      if (!correctLetters.includes(letter)) {
-        correctLetters.push(letter);
-        displayWord();
-      } else {
-        showNotification(messages[0]);
-      }
-    } else {
-      if (!wrongLetters.includes(letter)) {
-        wrongLetters.push(letter);
-
-        updateWrongLettersEl();
-      } else {
-        showNotification(messages[0]);
-      }
-    }
+    const letter = e.key.toUpperCase();
+    processPressedLetter(letter);
   } else {
     showNotification(messages[1]);
   }
@@ -122,19 +141,18 @@ playAgainBtn.addEventListener("click", async () => {
   correctLetters.splice(0);
   wrongLetters.splice(0);
 
-  // selectedWord = words[Math.floor(Math.random() * words.length)];
-  selectedWord = await getWordFromAPI(herokuWordAPI);
-
-  displayWord();
-
+  initializeGame();
   updateWrongLettersEl();
+  updateAlphabetContainer();
 
   popup.style.display = "none";
 });
 
 initializeGame = async () => {
   selectedWord = await getWordFromAPI(herokuWordAPI);
-  console.log(selectedWord);
+  console.log("Shhhh!! Don't tell anyone... this is the word " + selectedWord);
   displayWord();
 };
+
+updateAlphabetContainer();
 initializeGame();

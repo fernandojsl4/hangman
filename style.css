@@ -3,27 +3,61 @@
 }
 
 body {
-  background-color: #34495e;
+  background-color: #1c2432;
   color: #fff;
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 80vh;
   margin: 0;
-  overflow: hidden;
 }
 
 h1 {
   margin: 20px 0 0;
 }
 
+.title {
+  background: #F3D611;
+  text-align: center;
+  margin-top: 1em;
+  border-radius: 1em;
+  padding: 1em;
+  color: #1c2432;
+}
+
 .game-container {
-  padding: 20px 30px;
+  padding: 20px;
   position: relative;
-  margin: auto;
-  height: 350px;
-  width: 450px;
+}
+
+.alphabet-letter {
+  display: inline-block;
+  margin: 5px;
+  width: 30px;
+  padding: 5px;
+  background-color: #2980b9;
+  border-radius: 10px;
+  list-style: none;
+  text-align: center;
+  position: relative;
+}
+
+.letters-container {
+  margin-top: 10px;
+  width: 200px;
+  margin: 0 auto;
+}
+
+.alphabet-letter--pressed {
+  margin: 5px;
+  width: 30px;
+  float: left;
+  padding: 5px;
+  background-color: #2b2f31;
+  border-radius: 10px;
+  list-style: none;
+  text-align: center;
+  position: relative;
 }
 
 .figure-container {
@@ -38,28 +72,22 @@ h1 {
 }
 
 .wrong-letters-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  text-align: right;
+  height: 4em;
 }
 
 .wrong-letters-container p {
   margin: 0 0 5px;
+  padding-bottom: 10px;
 }
 
 .wrong-letters-container span {
   font-size: 24px;
 }
 
-.word {
+.word-container {
+  height: 4em;
   display: flex;
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  justify-content: center;
 }
 
 .letter {
@@ -114,10 +142,11 @@ h1 {
 
 .notification-container {
   background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 10px 10px 0 0;
+  border-radius: 10px;
   padding: 15px 20px;
   position: absolute;
-  bottom: -50px;
+  bottom: -100px;
+  opacity: 0;
   transition: transform 0.3s ease-in-out;
 }
 
@@ -126,5 +155,6 @@ h1 {
 }
 
 .notification-container.show {
-  transform: translateY(-50px);
+  transform: translateY(-100px);
+  opacity: 1;
 }
