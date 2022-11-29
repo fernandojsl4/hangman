@@ -26,7 +26,7 @@ function updateAlphabetContainer() {
       .split("")
       .map((letter) =>
         wrongLetters.includes(letter) || correctLetters.includes(letter)
-          ? `<li class="alphabet-letter--pressed">${letter}</li>`
+          ? `<li class="alphabet-letter alphabet-letter--pressed">${letter}</li>`
           : `<li class="alphabet-letter">${letter}</li>`
       )
       .join("")}`;

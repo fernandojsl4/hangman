@@ -49,15 +49,7 @@ h1 {
 }
 
 .alphabet-letter--pressed {
-  margin: 5px;
-  width: 30px;
-  float: left;
-  padding: 5px;
   background-color: #2b2f31;
-  border-radius: 10px;
-  list-style: none;
-  text-align: center;
-  position: relative;
 }
 
 .figure-container {
@@ -155,6 +147,6 @@ h1 {
 }
 
 .notification-container.show {
-  transform: translateY(-100px);
+  transform: translateY(-500px);
   opacity: 1;
 }
